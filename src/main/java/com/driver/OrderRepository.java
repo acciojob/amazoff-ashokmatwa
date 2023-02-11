@@ -32,6 +32,8 @@ public class OrderRepository {
         partnerListOrderPair.put(partnerId, null);
     }
     public void addOrderPartnerPair(String orderId, String partnerId){
+
+//        if(orderMap.containsKey(orderId) && deliveryPartnerMap.containsKey(partnerId))
         orderPartnerPair.put(orderId, partnerId);
 
         //List<Order> list = partnerListOrderPair.get(partnerId);
@@ -40,6 +42,9 @@ public class OrderRepository {
         //list.add(order);
         list.add(orderId);
         partnerListOrderPair.put(partnerId, list);
+
+//        DeliveryPartner deliveryPartner = deliveryPartnerMap.get(partnerId);
+//        deliveryPartner.setNumberOfOrders(list.size());
     }
     public Order getOrderById(String orderId){
         return orderMap.get(orderId);
@@ -49,11 +54,13 @@ public class OrderRepository {
     }
     public Integer getOrderCountByPartnerId(String partnerId){
         //List<Order> list = partnerListOrderPair.get(partnerId);
+//        if(partnerListOrderPair.containsKey(partnerId))
         List<String> list = partnerListOrderPair.get(partnerId);
         return list.size();
     }
     public List<String> getOrdersByPartnerId(String partnerId){
         //List<Order> list = partnerListOrderPair.get(partnerId);
+//        if(partnerListOrderPair.containsKey(partnerId))
         List<String> list = partnerListOrderPair.get(partnerId);
         return list;
     }
@@ -80,8 +87,10 @@ public class OrderRepository {
         int min = Integer.parseInt(time.substring(3));
         int timeInt = hour*60 + min;
 
+//        if(partnerListOrderPair.containsKey(partnerId))
         List<String> list = partnerListOrderPair.get(partnerId);
         for(String orderId : list){
+//            if(orderMap.containsKey(orderId))
             Order order = orderMap.get(orderId);
             int deliverTime = order.getDeliveryTime();
             if(deliverTime > timeInt)
@@ -91,8 +100,10 @@ public class OrderRepository {
     }
     public String getLastDeliveryTimeByPartnerId(String partnerId){
         int lastTime = 0;
+//        if(partnerListOrderPair.containsKey(partnerId))
         List<String> list = partnerListOrderPair.get(partnerId);
         for(String orderId : list){
+//            if(orderMap.containsKey(orderId))
             Order order = orderMap.get(orderId);
             int deliverTime = order.getDeliveryTime();
             if(deliverTime > lastTime)
@@ -101,26 +112,39 @@ public class OrderRepository {
         //covert int to string
         int hour = lastTime/60;
         int min = lastTime%60;
-        String ans = hour+":"+min;
-        return ans;
+
+        String hourS = Integer.toString(hour);
+        String minS = Integer.toString((min));
+        if(hourS.length() == 1) hourS = "0" + hourS;
+        if(minS.length() == 1) minS = "0" + minS;
+        return hourS + ":" + minS;
+//        String ans = hour+":"+min;
+//        return ans;
     }
     public void deletePartnerById(String partnerId){
+//        if(deliveryPartnerMap.containsKey(partnerId))
         deliveryPartnerMap.remove(partnerId);
+//        if(partnerListOrderPair.containsKey(partnerId))
         partnerListOrderPair.remove(partnerId);
 
         for(String orderId : orderPartnerPair.keySet()){
             if(orderPartnerPair.get(orderId).equals(partnerId))
                 orderPartnerPair.put(orderId, null);
+            //orderPartnerPair.remove(orderId);
         }
     }
     public void deleteOrderById(String orderId){
+//        if(orderMap.containsKey(orderId))
         orderMap.remove(orderId);
-
+//        if(orderPartnerPair.containsKey(orderId))
         String partnerId = orderPartnerPair.get(orderId);
         orderPartnerPair.remove(orderId);
 
         List<String> list = partnerListOrderPair.get(partnerId);
         list.remove(orderId);
+        partnerListOrderPair.put(partnerId, list); // update again
 
+//        DeliveryPartner deliveryPartner = deliveryPartnerMap.get(partnerId);
+//        deliveryPartner.setNumberOfOrders(list.size());
     }
 }
