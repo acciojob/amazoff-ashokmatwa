@@ -21,13 +21,13 @@ public class OrderRepository {
 
     public void addOrder(Order order){
         orderMap.put(order.getId(), order);
-        orderPartnerPair.put(order.getId(), null); // not assigned any partner
+//        orderPartnerPair.put(order.getId(), null); // not assigned any partner
     }
     public void addPartner(String partnerId){
         DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
         deliveryPartnerMap.put(partnerId, deliveryPartner);
 
-        partnerListOrderPair.put(partnerId, new ArrayList<>());
+//        partnerListOrderPair.put(partnerId, new ArrayList<>());
     }
     public void addOrderPartnerPair(String orderId, String partnerId){
 
