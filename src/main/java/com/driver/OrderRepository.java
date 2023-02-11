@@ -24,13 +24,13 @@ public class OrderRepository {
 
     public void addOrder(Order order){
         orderMap.put(order.getId(), order);
-        orderPartnerPair.put(order.getId(), null); // not assigned any partner
+//        orderPartnerPair.put(order.getId(), null); // not assigned any partner
     }
     public void addPartner(String partnerId){
         DeliveryPartner deliveryPartner = new DeliveryPartner(partnerId);
         deliveryPartnerMap.put(partnerId, deliveryPartner);
 
-        partnerListOrderPair.put(partnerId, null);
+//        partnerListOrderPair.put(partnerId, null);
     }
     public void addOrderPartnerPair(String orderId, String partnerId){
 
@@ -38,9 +38,7 @@ public class OrderRepository {
 
             orderPartnerPair.put(orderId, partnerId);
 
-            //List<Order> list = partnerListOrderPair.get(partnerId);
-            //Order order = orderMap.get(orderId);
-            //list.add(order);
+            //List<Order> list = partnerListOrderPair.get(partnerId); Order order = orderMap.get(orderId); list.add(order);
             List<String> list = new ArrayList<>();
             if(partnerListOrderPair.containsKey(partnerId))
                list = partnerListOrderPair.get(partnerId);
@@ -76,16 +74,22 @@ public class OrderRepository {
         List<String> list = null;
         for(String orderId : orderMap.keySet())
             list.add(orderId);
-
         //list.addAll(orderMap.keySet());
+
         return list;
     }
     public Integer getCountOfUnassignedOrders(){
         Integer count = 0;
-        for(String partnerId : orderPartnerPair.values()){
-            if(partnerId == null)
+
+        for(String orderId : orderMap.keySet()){
+            if(!orderPartnerPair.containsKey(orderId))
                 count++;
         }
+
+//        for(String partnerId : orderPartnerPair.values()){
+//            if(partnerId == null)
+//                count++;
+//        }
         return count;
     }
     public Integer getOrdersLeftAfterGivenTimeByPartnerId(String time, String partnerId){
@@ -136,19 +140,26 @@ public class OrderRepository {
 //        return ans;
     }
     public void deletePartnerById(String partnerId){
-//        if(deliveryPartnerMap.containsKey(partnerId))
-        deliveryPartnerMap.remove(partnerId);
-//        if(partnerListOrderPair.containsKey(partnerId))
-        partnerListOrderPair.remove(partnerId);
+        if(deliveryPartnerMap.containsKey(partnerId))
+            deliveryPartnerMap.remove(partnerId);
 
-        for(String orderId : orderPartnerPair.keySet()){
-            if(orderPartnerPair.get(orderId).equals(partnerId))
-                orderPartnerPair.put(orderId, null);
-            //orderPartnerPair.remove(orderId);
+        if(partnerListOrderPair.containsKey(partnerId)){
+            List<String> list = partnerListOrderPair.get(partnerId);
+            for(String orderId : list){
+                if(orderPartnerPair.containsKey(orderId))
+                    orderPartnerPair.remove(orderId);
+            }
+            partnerListOrderPair.remove(partnerId);
+
+//            for(String orderId : orderPartnerPair.keySet()){
+//                if(orderPartnerPair.get(orderId).equals(partnerId))
+//                    orderPartnerPair.put(orderId, null);
+                //orderPartnerPair.remove(orderId);
+//            }
         }
     }
     public void deleteOrderById(String orderId){
-//        if(orderMap.containsKey(orderId))
+        if(orderMap.containsKey(orderId))
             orderMap.remove(orderId);
 
         if(orderPartnerPair.containsKey(orderId)){
