@@ -3,6 +3,7 @@ package com.driver;
 import io.swagger.models.auth.In;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,18 +34,23 @@ public class OrderRepository {
     }
     public void addOrderPartnerPair(String orderId, String partnerId){
 
-//        if(orderMap.containsKey(orderId) && deliveryPartnerMap.containsKey(partnerId))
-        orderPartnerPair.put(orderId, partnerId);
+        if(orderMap.containsKey(orderId) && deliveryPartnerMap.containsKey(partnerId)){
 
-        //List<Order> list = partnerListOrderPair.get(partnerId);
-        List<String> list = partnerListOrderPair.get(partnerId);
-        //Order order = orderMap.get(orderId);
-        //list.add(order);
-        list.add(orderId);
-        partnerListOrderPair.put(partnerId, list);
+            orderPartnerPair.put(orderId, partnerId);
+
+            //List<Order> list = partnerListOrderPair.get(partnerId);
+            //Order order = orderMap.get(orderId);
+            //list.add(order);
+            List<String> list = new ArrayList<>();
+            if(partnerListOrderPair.containsKey(partnerId))
+               list = partnerListOrderPair.get(partnerId);
+            list.add(orderId);
+            partnerListOrderPair.put(partnerId, list);
 
 //        DeliveryPartner deliveryPartner = deliveryPartnerMap.get(partnerId);
 //        deliveryPartner.setNumberOfOrders(list.size());
+        }
+
     }
     public Order getOrderById(String orderId){
         return orderMap.get(orderId);
@@ -54,14 +60,16 @@ public class OrderRepository {
     }
     public Integer getOrderCountByPartnerId(String partnerId){
         //List<Order> list = partnerListOrderPair.get(partnerId);
-//        if(partnerListOrderPair.containsKey(partnerId))
-        List<String> list = partnerListOrderPair.get(partnerId);
+        List<String> list = new ArrayList<>();
+        if(partnerListOrderPair.containsKey(partnerId))
+            list = partnerListOrderPair.get(partnerId);
         return list.size();
     }
     public List<String> getOrdersByPartnerId(String partnerId){
         //List<Order> list = partnerListOrderPair.get(partnerId);
-//        if(partnerListOrderPair.containsKey(partnerId))
-        List<String> list = partnerListOrderPair.get(partnerId);
+        List<String> list = new ArrayList<>();
+        if(partnerListOrderPair.containsKey(partnerId))
+            list = partnerListOrderPair.get(partnerId);
         return list;
     }
     public List<String> getAllOrders(){
@@ -87,28 +95,34 @@ public class OrderRepository {
         int min = Integer.parseInt(time.substring(3));
         int timeInt = hour*60 + min;
 
-//        if(partnerListOrderPair.containsKey(partnerId))
-        List<String> list = partnerListOrderPair.get(partnerId);
-        for(String orderId : list){
-//            if(orderMap.containsKey(orderId))
-            Order order = orderMap.get(orderId);
-            int deliverTime = order.getDeliveryTime();
-            if(deliverTime > timeInt)
-                count++;
+        if(partnerListOrderPair.containsKey(partnerId)){
+            List<String> list = partnerListOrderPair.get(partnerId);
+            for(String orderId : list){
+                if(orderMap.containsKey(orderId)){
+                    Order order = orderMap.get(orderId);
+                    int deliverTime = order.getDeliveryTime();
+                    if(deliverTime > timeInt)
+                        count++;
+                }
+            }
         }
+
         return count;
     }
     public String getLastDeliveryTimeByPartnerId(String partnerId){
         int lastTime = 0;
-//        if(partnerListOrderPair.containsKey(partnerId))
-        List<String> list = partnerListOrderPair.get(partnerId);
-        for(String orderId : list){
-//            if(orderMap.containsKey(orderId))
-            Order order = orderMap.get(orderId);
-            int deliverTime = order.getDeliveryTime();
-            if(deliverTime > lastTime)
-                lastTime = deliverTime;
+        if(partnerListOrderPair.containsKey(partnerId)){
+            List<String> list = partnerListOrderPair.get(partnerId);
+            for(String orderId : list){
+                if(orderMap.containsKey(orderId)){
+                    Order order = orderMap.get(orderId);
+                    int deliverTime = order.getDeliveryTime();
+                    if(deliverTime > lastTime)
+                        lastTime = deliverTime;
+                }
+            }
         }
+
         //covert int to string
         int hour = lastTime/60;
         int min = lastTime%60;
@@ -135,16 +149,19 @@ public class OrderRepository {
     }
     public void deleteOrderById(String orderId){
 //        if(orderMap.containsKey(orderId))
-        orderMap.remove(orderId);
-//        if(orderPartnerPair.containsKey(orderId))
-        String partnerId = orderPartnerPair.get(orderId);
-        orderPartnerPair.remove(orderId);
+            orderMap.remove(orderId);
 
-        List<String> list = partnerListOrderPair.get(partnerId);
-        list.remove(orderId);
-        partnerListOrderPair.put(partnerId, list); // update again
+        if(orderPartnerPair.containsKey(orderId)){
+            String partnerId = orderPartnerPair.get(orderId);
+            orderPartnerPair.remove(orderId);
+
+            List<String> list = partnerListOrderPair.get(partnerId);
+            list.remove(orderId);
+            partnerListOrderPair.put(partnerId, list); // update again
 
 //        DeliveryPartner deliveryPartner = deliveryPartnerMap.get(partnerId);
 //        deliveryPartner.setNumberOfOrders(list.size());
+        }
+
     }
 }
