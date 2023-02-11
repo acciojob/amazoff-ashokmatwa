@@ -71,20 +71,27 @@ public class OrderRepository {
         return list;
     }
     public List<String> getAllOrders(){
-        List<String> list = null;
-        for(String orderId : orderMap.keySet())
-            list.add(orderId);
-        //list.addAll(orderMap.keySet());
-
-        return list;
+//        List<String> list = new ArrayList<>();
+//        for(String orderId : orderMap.keySet())
+//            list.add(orderId);
+//        //list.addAll(orderMap.keySet());
+//
+//        return list;
+        return new ArrayList<>(orderMap.keySet());
     }
     public Integer getCountOfUnassignedOrders(){
         Integer count = 0;
 
-        for(String orderId : orderMap.keySet()){
+        List<String> list = new ArrayList<>(orderMap.keySet());
+        for(String orderId : list){
             if(!orderPartnerPair.containsKey(orderId))
                 count++;
         }
+
+//        for(String orderId : orderMap.keySet()){
+//            if(!orderPartnerPair.containsKey(orderId))
+//                count++;
+//        }
 
 //        for(String partnerId : orderPartnerPair.values()){
 //            if(partnerId == null)
